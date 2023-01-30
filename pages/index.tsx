@@ -1,62 +1,71 @@
-import styles from '../styles/Home.module.css'
-import { startRegistration } from '@simplewebauthn/browser';
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-    const { data: session, status } = {
-      data: {
-        user: {
-          email: "toto"
-        }
-      }, 
-      status: "tata"
-    }
-
-    async function registerWebauthn() {
-        const optionsResponse = await fetch('/api/auth/webauthn/register');
-        if (optionsResponse.status !== 200) {
-            alert('Could not get registration options from server');
-            return;
-        }
-        const opt = await optionsResponse.json();
-
-        try {
-            const credential = await startRegistration(opt)
-
-            const response = await fetch('/api/auth/webauthn/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(credential),
-                credentials: 'include'
-            });
-            if (response.status != 201) {
-                alert('Could not register webauthn credentials.');
-            } else {
-                alert('Your webauthn credentials have been registered.')
-            }
-        } catch (err) {
-            alert(`Registration failed. ${(err as Error).message}`);
-        }
-
-    }
-
-    if (status === 'authenticated') {
-        return (
-            <div className={styles.container}>
-
-                <main className={styles.main}>
-                    <h1 className={styles.title}>
-                        Welcome to <a href="https://webauthn.guide/" target="_blank"
-                                      rel="noopener noreferrer">Webauthn</a> Demo
-                    </h1>
-                    <button onClick={registerWebauthn}>Register Webauthn</button>
-
-                    <span>Signed in as {session?.user?.email}</span>
-                    <button>Log out</button>
-                </main>
-            </div>
-        );
-    }
-    return <div className={styles.container}>Loading...</div>;
-}
+  return (
+    <div className="flex h-screen bg-black">
+      <div className="w-screen h-screen flex flex-col justify-center items-center">
+        <Image
+          width={512}
+          height={512}
+          src="/logo.png"
+          alt="Platforms on Vercel"
+          className="w-48 h-48"
+        />
+        <div className="text-center max-w-screen-sm mb-10">
+          <h1 className="text-stone-200 font-bold text-2xl">
+            Next.js Prisma MySQL Auth Starter
+          </h1>
+          <p className="text-stone-400 mt-5">
+            This is a{" "}
+            <a
+              href="https://nextjs.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-400 underline hover:text-stone-200 transition-all"
+            >
+              Next.js
+            </a>{" "}
+            starter kit that uses{" "}
+            <a
+              href="https://next-auth.js.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-400 underline hover:text-stone-200 transition-all"
+            >
+              Next-Auth
+            </a>{" "}
+            for simple email + password login and a MySQL database to persist
+            the data.
+          </p>
+        </div>
+        <div className="flex space-x-3">
+          <Link
+            href="/protected"
+            prefetch={false} // workaround until https://github.com/vercel/vercel/pull/8978 is deployed
+            className="text-stone-400 underline hover:text-stone-200 transition-all"
+          >
+            Protected Page
+          </Link>
+          <p className="text-white">·</p>
+          <Link
+            href="/register"
+            prefetch={false} // workaround until https://github.com/vercel/vercel/pull/8978 is deployed
+            className="text-stone-400 underline hover:text-stone-200 transition-all"
+          >
+            Register
+          </Link>
+          <p className="text-white">·</p>
+          <a
+            href="https://github.com/steven-tey/nextjs-typescript-starter"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-stone-400 underline hover:text-stone-200 transition-all"
+          >
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+  }
